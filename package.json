@@ -1,0 +1,37 @@
+{
+    "name": "vsc-gcc",
+    "displayName": "Run GCC",
+    "description": "Right-click a file and run GCC",
+    "version": "1.0.2",
+    "publisher": "MushroomFX",
+    "engines": {
+        "vscode": "^1.90.0"
+    },
+    "categories": ["Other"],
+    "icon": "icon.png",
+    "activationEvents": [
+        "onCommand:extension.runFileCmd"
+    ],
+    "main": "./extension.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/MushroomFX/vsc_gcc.git"
+    },
+    "contributes": {
+        "commands": [
+            {
+                "command": "extension.runFileCmd",
+                "title": "Run GCC"
+            }
+        ],
+        "menus": {
+            "explorer/context": [
+                {
+                    "command": "extension.runFileCmd",
+                    "when": "resourceLangId != ''",
+                    "group": "navigation"
+                }
+            ]
+        }
+    }
+}
