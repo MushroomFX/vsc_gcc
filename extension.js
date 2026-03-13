@@ -110,7 +110,6 @@ function activate(context) {
         // vscode.window.showInformationMessage(`Compiler settings: ${parameters}`);
         
         
-        vscode.window.showInformationMessage(`gcc -finput-charset=UTF-8 "${fileName}" -o "${safeExeFile}" ${parameters}`,);
 
 
 
@@ -123,6 +122,7 @@ function activate(context) {
             `echo ${banner}`,
             
             `echo Compiling\: ^"${fileName}^" ==^> ^"${safeExeFile}^"...`,
+            `pushd ${folderPath}`,
             `gcc -finput-charset=UTF-8 "${fileName}" -o "${safeExeFile}" ${parameters}`,
             
             `echo Running ^"${safeExeFile}^"...`,
@@ -133,6 +133,9 @@ function activate(context) {
         terminal.show(false);
         
         const cmd = commands.join(" && ")
+
+        vscode.window.showInformationMessage(cmd);
+
         terminal.sendText(cmd, true)
 
 
