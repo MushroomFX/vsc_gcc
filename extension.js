@@ -1,12 +1,16 @@
 const vscode = require('vscode');
 const path = require('path');
+const fs = require('fs');
+
+const pkg = require('./package.json');
 
 const info = {
     author:{
         full:"MushroomFX",
         short:"MFX"
     },
-    debugName: "mfx gcc-runner"
+    debugName: "mfx gcc-runner",
+    version: pkg.version
 }
 
 const supportedFormats = [
@@ -74,7 +78,7 @@ function activate(context) {
         const exeFile = fileName.replace(extension, ".exe");
 
         const safeExeFile = fileName.replace(/\.[^/.]+$/, "") // remove extension
-                            .replace(/[^\x00-\x7F]/g, "") // remove non-ASCII
+                            .replace(/[^\x00-\x7F]/g, "_") // remove non-ASCII
                             + ".exe";
 
         // Check for an existing terminal or create one using cmd.exe
@@ -89,7 +93,26 @@ function activate(context) {
         // create banner
         const cols = terminal?.dimensions?.columns || 80;  // fallback if undefined
         const splitRow = "=".repeat(cols);
-        const banner = bannerRow(splitRow, ` ${info.debugName} `);
+        const banner = bannerRow(splitRow, ` ${info.debugName} v${info.version} `);
+
+        let parameterArray = [""]
+
+        const rawC = fs.readFileSync(filePath)
+        
+        if(rawC.includes("WinMain")){
+            parameterArray.push("mwindows")
+        } else {
+            parameterArray.push("mconsole")
+        }
+
+        const parameters = parameterArray.join(" -").trim("")
+
+        // vscode.window.showInformationMessage(`Compiler settings: ${parameters}`);
+        
+        
+        vscode.window.showInformationMessage(`gcc -finput-charset=UTF-8 "${fileName}" -o "${safeExeFile}" ${parameters}`,);
+
+
 
         // Construct the commands
         const commands = [
@@ -100,7 +123,7 @@ function activate(context) {
             `echo ${banner}`,
             
             `echo Compiling\: ^"${fileName}^" ==^> ^"${safeExeFile}^"...`,
-            `gcc -finput-charset=UTF-8 "${fileName}" -o "${safeExeFile}"`,
+            `gcc -finput-charset=UTF-8 "${fileName}" -o "${safeExeFile}" ${parameters}`,
             
             `echo Running ^"${safeExeFile}^"...`,
             `@echo on`,
