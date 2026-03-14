@@ -2,7 +2,7 @@
     "name": "vsc-gcc",
     "displayName": "Run GCC",
     "description": "Right-click a file and run GCC",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "publisher": "MushroomFX",
     "engines": {
         "vscode": "^1.90.0"
@@ -10,7 +10,9 @@
     "categories": ["Other"],
     "icon": "icon.png",
     "activationEvents": [
-        "onCommand:extension.runFileCmd"
+        "onCommand:extension.runFileCmd",
+        "onStartupFinished",
+        "onDidOpenTextDocument"
     ],
     "main": "./extension.js",
     "repository": {
