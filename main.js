@@ -61,10 +61,11 @@ async function main(uri){
 
     const parameters = parameterArray.join(" -").trim("");
 
-    const outputFolder = "build"
-    const output = path.join(outputFolder,safeExeFile)
+    const outputFolderName = "build"
+    const outputPath = path.join(folderPath,outputFolderName)
+    const outputFile = path.join(outputPath,safeExeFile)
 
-    fs.mkdirSync(output,{recursive:true})
+    fs.mkdirSync(outputPath,{recursive:true})
 
     const commands = [
         "@echo off",
@@ -75,18 +76,19 @@ async function main(uri){
         `pushd "${folderPath}"`,
         
         `echo Compiling\: ^"${fileName}^" ==^> ^"${safeExeFile}^"...`,
-        `gcc -finput-charset=UTF-8 "${fileName}" -o "${output}" ${parameters}`,
+        `gcc -finput-charset=UTF-8 "${fileName}" -o "${outputFile}" ${parameters}`,
 
         `echo Running ^"${safeExeFile}^"...`,
         `@echo on`,
 
-        `"${output}"`
+        `"${outputFile}"`
     ];
 
     terminal.show(false);
 
     const cmd = commands.join(" && ");
 
+    vscode.window.showInformationMessage(cmd,);
     terminal.sendText(cmd, true);
 }
 
